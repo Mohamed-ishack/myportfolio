@@ -1,0 +1,481 @@
+/* About Section Styles */
+.about {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 0;
+}
+
+.about-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.about-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Profile Section with Image */
+.about-profile {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+}
+
+.profile-image-wrapper {
+  flex: 0 0 300px;
+  text-align: center;
+}
+
+.profile-image-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.profile-image-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.profile-image-container:hover .profile-image {
+  transform: scale(1.1);
+}
+
+.profile-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(102, 126, 234, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-image-container:hover .profile-overlay {
+  opacity: 1;
+}
+
+.social-icons {
+  display: flex;
+  gap: 20px;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  transform: translateY(-5px);
+}
+
+.profile-status {
+  margin-top: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background: #4caf50;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+.profile-text {
+  flex: 1;
+}
+
+.profile-text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.dark-mode .profile-text p {
+  color: #ccc;
+}
+
+.profile-text p:first-child {
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+/* Stats Section */
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin: 50px 0;
+  padding: 30px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .about-stats {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-item {
+  text-align: center;
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.dark-mode .stat-label {
+  color: #aaa;
+}
+
+/* Personal Information Grid */
+.personal-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 40px 0;
+  padding: 30px;
+  background: linear-gradient(135deg, #667eea08 0%, #764ba208 100%);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.personal-info > div {
+  text-align: center;
+  padding: 20px;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.dark-mode .personal-info > div {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.personal-info > div:hover {
+  transform: translateY(-5px);
+  background: rgba(102, 126, 234, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.personal-info h4 {
+  font-size: 0.9rem;
+  color: #667eea;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.personal-info p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.dark-mode .personal-info p {
+  color: #fff;
+}
+
+/* Quote Section */
+.about-quote {
+  margin-top: 50px;
+  padding: 30px 40px;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-radius: 15px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-quote i {
+  font-size: 2rem;
+  color: #667eea;
+  margin-bottom: 15px;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.about-quote p {
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.about-quote span {
+  font-size: 0.9rem;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.dark-mode .about-quote p {
+  color: #ccc;
+}
+
+/* Decorative Elements */
+.about::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.about::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  height: 300px;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(102, 126, 234, 0.03) 0px,
+    rgba(102, 126, 234, 0.03) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+  pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .about-profile {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .profile-image-wrapper {
+    flex: 0 0 auto;
+  }
+
+  .profile-image-container {
+    width: 250px;
+    height: 250px;
+  }
+
+  .profile-text {
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .about {
+    padding: 60px 0;
+  }
+
+  .profile-image-container {
+    width: 220px;
+    height: 220px;
+  }
+
+  .profile-text p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .about-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .personal-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .personal-info > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 15px 20px;
+  }
+
+  .personal-info h4 {
+    margin-bottom: 0;
+  }
+
+  .about-quote {
+    padding: 20px;
+  }
+
+  .about-quote p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .personal-info > div {
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+  }
+
+  .profile-image-container {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Animation for elements */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-image-wrapper,
+.profile-text,
+.about-stats,
+.personal-info,
+.about-quote {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.profile-image-wrapper {
+  animation-delay: 0.1s;
+}
+
+.profile-text {
+  animation-delay: 0.2s;
+}
+
+.about-stats {
+  animation-delay: 0.3s;
+}
+
+.personal-info {
+  animation-delay: 0.4s;
+}
+
+.about-quote {
+  animation-delay: 0.5s;
+}
+
+/* Optional: Add a border effect to profile image */
+.profile-image-container::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(135deg, #667eea, #764ba2, #667eea);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-image-container:hover::before {
+  opacity: 1;
+}
+
+/* Floating animation for status */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.profile-status {
+  animation: float 3s ease-in-out infinite;
+}
