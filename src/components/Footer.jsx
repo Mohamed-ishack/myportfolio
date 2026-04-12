@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <p>
-          Made with <FaHeart /> by John Doe | © 2024 All Rights Reserved
+          Made with <FaHeart /> by Mohamed Ishack | © 2026 All Rights Reserved
         </p>
       </div>
     </footer>

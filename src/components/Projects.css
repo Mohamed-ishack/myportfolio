@@ -123,3 +123,76 @@
   background: #444;
   color: #fff;
 }
+
+/* ── Skeleton Loader ────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skeleton-image,
+.skeleton-line,
+.skeleton-tag,
+.skeleton-btn {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+.dark-mode .skeleton-image,
+.dark-mode .skeleton-line,
+.dark-mode .skeleton-tag,
+.dark-mode .skeleton-btn {
+  background: linear-gradient(90deg, #3a3a3a 25%, #4a4a4a 50%, #3a3a3a 75%);
+  background-size: 600px 100%;
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 250px; /* matches your .project-image img height */
+  border-radius: 0;
+}
+
+.skeleton-line.title {
+  width: 55%;
+  height: 20px;
+  margin-bottom: 12px;
+}
+
+.skeleton-line.text {
+  width: 100%;
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line.short {
+  width: 70%;
+  height: 14px;
+  margin-bottom: 16px;
+}
+
+.skeleton-tags {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.skeleton-tag {
+  width: 64px;
+  height: 28px;
+  border-radius: 5px; /* matches your .tech-tag */
+}
+
+.skeleton-btn {
+  width: 90px;
+  height: 38px;
+  border: none;
+  border-radius: 25px; /* matches your .filter-btn */
+  cursor: default;
+}

@@ -40,11 +40,6 @@ const Header = ({ darkMode, setDarkMode, isAdminPage = false, onNavigate }) => {
                 <li><Link to="skills" smooth={true} duration={500} onClick={closeMenu}>Skills</Link></li>
                 <li><Link to="projects" smooth={true} duration={500} onClick={closeMenu}>Projects</Link></li>
                 <li><Link to="contact" smooth={true} duration={500} onClick={closeMenu}>Contact</Link></li>
-                <li>
-                  <a href="/admin" onClick={(event) => { event.preventDefault(); handleNavigation('/admin'); }}>
-                    Admin
-                  </a>
-                </li>
               </>
             )}
           </ul>

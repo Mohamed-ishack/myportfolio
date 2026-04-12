@@ -1,41 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-scroll';
-import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope, FaExternalLinkAlt, FaDownload } from 'react-icons/fa';
-import './Hero.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-scroll";
+import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope, FaDownload } from "react-icons/fa";
+import "./Hero.css";
+import axios from "axios";
 
-const Hero = ({ hero }) => {
+const SOCIAL_LINKS = [
+  { name: "GitHub", url: "https://github.com/your-username", icon: FaGithub },
+  { name: "LinkedIn", url: "https://linkedin.com/in/your-username", icon: FaLinkedin },
+  { name: "Twitter", url: "https://twitter.com/your-username", icon: FaTwitter },
+  { name: "Email", url: "mailto:ishackmohamed028@gmail.com", icon: FaEnvelope },
+];
+
+const Hero = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState({
+    name: "",
+    role: "",
+    description: "",
+    profileImage: "",
+    experienceYears: 0,
+    projectsDone: 0,
+    techStack: [],
+  });
 
   useEffect(() => {
     setIsVisible(true);
+    axios.get("http://localhost:8080/api/hero")
+      .then((response) => {
+        const raw = response.data;
+        const techStack = Array.isArray(raw.techStack)
+          ? raw.techStack
+          : typeof raw.techStack === "string"
+          ? raw.techStack.split(",").map((t) => t.trim())
+          : [];
+        setData({ ...raw, techStack });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching hero data:", error);
+        setIsLoading(false);
+      });
   }, []);
 
-  const data = hero || {
-    name: 'Mohamed Ishack',
-    role: 'Full Stack Developer',
-    description: 'I build exceptional and accessible digital experiences for the web.',
-    profileImage: './src/images/profile.jpg',
-    experienceYears: 0,
-    projectsDone: 3,
-    techStack: ['React', 'Node.js', 'Python', 'MongoDB'],
-    social: [
-      { name: 'GitHub', url: 'https://github.com' },
-      { name: 'LinkedIn', url: 'https://linkedin.com' },
-      { name: 'Twitter', url: 'https://twitter.com' },
-      { name: 'Email', url: 'mailto:ishackmohamed028@gmail.com' }
-    ]
-  };
-
-  const socialIconMap = {
-    GitHub: FaGithub,
-    LinkedIn: FaLinkedin,
-    Twitter: FaTwitter,
-    Email: FaEnvelope
-  };
+  if (isLoading) return <div className="loading">Loading...</div>;
 
   return (
     <section id="hero" className="hero">
-      {/* Animated Background Elements */}
       <div className="animated-bg">
         <div className="gradient-bg"></div>
         <div className="floating-shapes">
@@ -49,7 +60,7 @@ const Hero = ({ hero }) => {
       </div>
 
       <div className="container">
-        <div className={`hero-content ${isVisible ? 'visible' : ''}`}>
+        <div className={`hero-content ${isVisible ? "visible" : ""}`}>
           <div className="hero-left">
             <div className="hero-text">
               <div className="greeting">Welcome to my portfolio</div>
@@ -61,7 +72,7 @@ const Hero = ({ hero }) => {
                 <span className="typed-text">{data.role}</span>
               </h2>
               <p>{data.description}</p>
-              
+
               <div className="hero-buttons">
                 <Link to="contact" smooth={true} duration={500} className="btn btn-primary">
                   Get In Touch
@@ -69,20 +80,24 @@ const Hero = ({ hero }) => {
                 <Link to="projects" smooth={true} duration={500} className="btn btn-secondary">
                   View Projects
                 </Link>
-                <a href="/resume.pdf" download className="btn btn-outline">
+                <a href="/myresume.pdf" download className="btn btn-outline">
                   <FaDownload /> Resume
                 </a>
               </div>
 
               <div className="social-links">
-                {data.social.map((item) => {
-                  const Icon = socialIconMap[item.name] || FaExternalLinkAlt;
-                  return (
-                    <a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer" className="social-link">
-                      <Icon />
-                    </a>
-                  );
-                })}
+                {SOCIAL_LINKS.map((item) => (
+                  
+                  <a
+                    key={item.name}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-link"
+                  >
+                    <item.icon />
+                  </a>
+                ))}
               </div>
             </div>
           </div>
@@ -91,10 +106,11 @@ const Hero = ({ hero }) => {
             <div className="profile-card">
               <div className="profile-image-wrapper">
                 <div className="profile-image-container">
-                  <img 
-                    src={data.profileImage}
-                    alt="Profile" 
+                  <img
+                    src={data.profileImage || "/default-profileimage.jpg"}
+                    alt="Profile"
                     className="profile-image"
+                    onError={(e) => { e.target.src = "/default-profileimage.jpg"; }}
                   />
                   <div className="profile-glow"></div>
                   <div className="profile-border"></div>
@@ -108,6 +124,7 @@ const Hero = ({ hero }) => {
                   <div className="projects-text">Projects Done</div>
                 </div>
               </div>
+
               <div className="tech-stack">
                 {data.techStack.map((tech) => (
                   <div key={tech} className="tech-icon">{tech}</div>
@@ -117,7 +134,7 @@ const Hero = ({ hero }) => {
           </div>
         </div>
       </div>
-      
+
       <div className="scroll-indicator">
         <Link to="about" smooth={true} duration={500}>
           <span></span>

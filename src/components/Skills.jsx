@@ -1,23 +1,30 @@
-import React from 'react';
-import { 
-  FaReact, FaNodeJs, FaPython, FaJava, 
-  FaHtml5, FaJs, FaDatabase, FaCode 
-} from 'react-icons/fa';
-import { SiTypescript, SiMongodb, SiExpress } from 'react-icons/si';
-import './Skills.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  FaReact,
+  FaNodeJs,
+  FaPython,
+  FaJava,
+  FaHtml5,
+  FaJs,
+  FaDatabase,
+  FaCode,
+} from "react-icons/fa";
+import { SiTypescript, SiMongodb, SiExpress } from "react-icons/si";
+import "./Skills.css";
 
 const iconMap = {
   React: FaReact,
-  'Node.js': FaNodeJs,
+  "Node.js": FaNodeJs,
   Python: FaPython,
   Java: FaJava,
-  'HTML/CSS': FaHtml5,
+  "HTML/CSS": FaHtml5,
   JavaScript: FaJs,
   TypeScript: SiTypescript,
   Express: SiExpress,
   MongoDB: SiMongodb,
   PostgreSQL: FaDatabase,
-  MySQL: FaDatabase
+  MySQL: FaDatabase,
 };
 
 const getIcon = (iconKey) => {
@@ -25,35 +32,24 @@ const getIcon = (iconKey) => {
   return <Icon />;
 };
 
-const Skills = ({ skills }) => {
-  const skillCategories = skills?.length ? skills : [
-    {
-      title: "Frontend",
-      skills: [
-        { name: "React", icon: <FaReact />, level: 90 },
-        { name: "JavaScript", icon: <FaJs />, level: 85 },
-        { name: "TypeScript", icon: <SiTypescript />, level: 80 },
-        { name: "HTML/CSS", icon: <FaHtml5 />, level: 90 }
-      ]
-    },
-    {
-      title: "Backend",
-      skills: [
-        { name: "Node.js", icon: <FaNodeJs />, level: 85 },
-        { name: "Python", icon: <FaPython />, level: 80 },
-        { name: "Java", icon: <FaJava />, level: 75 },
-        { name: "Express", icon: <SiExpress />, level: 85 }
-      ]
-    },
-    {
-      title: "Database",
-      skills: [
-        { name: "MongoDB", icon: <SiMongodb />, level: 80 },
-        { name: "PostgreSQL", icon: <FaDatabase />, level: 75 },
-        { name: "MySQL", icon: <FaDatabase />, level: 85 }
-      ]
-    }
-  ];
+const Skills = () => {
+  const [skillCategories, setSkillCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/skills")
+      .then((response) => {
+        setSkillCategories(response.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching skills:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (isLoading) return <div className="loading">Loading...</div>;
 
   return (
     <section id="skills" className="skills">
@@ -66,14 +62,12 @@ const Skills = ({ skills }) => {
               <div className="skills-grid">
                 {category.skills.map((skill, skillIdx) => (
                   <div key={skillIdx} className="skill-item">
-                    <div className="skill-icon">
-                      {typeof skill.icon === 'string' ? getIcon(skill.icon) : skill.icon}
-                    </div>
+                    <div className="skill-icon">{getIcon(skill.icon)}</div>
                     <div className="skill-info">
                       <span className="skill-name">{skill.name}</span>
                       <div className="skill-bar">
-                        <div 
-                          className="skill-progress" 
+                        <div
+                          className="skill-progress"
                           style={{ width: `${skill.level}%` }}
                         ></div>
                       </div>

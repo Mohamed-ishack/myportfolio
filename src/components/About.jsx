@@ -1,41 +1,58 @@
-import React, { useEffect, useRef } from 'react';
-import './About.css';
+import React, { useEffect, useRef } from "react";
+import axios from "axios";
+import "./About.css";
 
-const About = ({ about }) => {
+const About = () => {
   const aboutRef = useRef(null);
-  const data = about || {
-    paragraphs: [
-      "I'm a passionate Full Stack Developer with over 5 years of experience building web applications. I love creating elegant solutions to complex problems and continuously learning new technologies.",
-      "My journey in web development started during my college years, and since then, I've worked with startups, agencies, and enterprises to deliver high-quality software solutions.",
-      "When I'm not coding, you can find me reading tech blogs, contributing to open source, or exploring new hiking trails."
-    ],
-    stats: [
-      { label: 'Projects Completed', value: '50+' },
-      { label: 'Happy Clients', value: '30+' },
-      { label: 'Years Experience', value: '5+' },
-      { label: 'Coffee Cups', value: '100+' }
-    ],
-    personalInfo: {
-      name: 'Mohamed Ishack',
-      email: 'ishackmohamed028@gmail.com',
-      location: 'Pudukkottai, TN',
-      experience: 'Fresher'
-    },
-    profileImage: './src/images/profile.jpg',
-    quote: 'Code is like humor. When you have to explain it, it is bad.',
-    quoteAuthor: 'Cory House'
-  };
+  const [data, setAboutData] = React.useState({
+    paragraphs: [],
+    stats: [],
+    personalInfo: {},
+    profileImage: "",
+    quote: "",
+    quoteAuthor: "",
+  });
+  const [isLoading, setIsLoading] = React.useState(true);
+  useEffect(() => {
+  axios.get("http://localhost:8080/api/about")
+    .then((response) => {
+      const raw = response.data;
+      setAboutData({
+        paragraphs: raw.description ? [raw.description] : [],
+        stats: [
+          { label: "Projects Completed", value: raw.projects || "0" },
+          { label: "Happy Clients",       value: raw.clients  || "0" },
+          { label: "Years Experience",    value: raw.years    || "0" },
+          { label: "Coffee Cups",         value: raw.coffee   || "0" },
+        ],
+        personalInfo: {
+          name:       raw.name       || "",
+          email:      raw.email      || "",
+          location:   raw.location   || "",
+          experience: raw.experience || "",
+        },
+        profileImage: raw.profileImage || "",
+        quote:        raw.quote        || "",
+        quoteAuthor:  raw.quoteAuthor  || "",
+      });
+      setIsLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching about data:", error);
+      setIsLoading(false);
+    });
+}, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+            entry.target.classList.add("visible");
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (aboutRef.current) {
@@ -54,20 +71,35 @@ const About = ({ about }) => {
           <div className="about-profile">
             <div className="profile-image-wrapper">
               <div className="profile-image-container">
-                <img 
-                  src={data.profileImage}
-                  alt="Profile" 
+                <img
+                  src={data.profileImage || null}
+                  alt="Profile"
                   className="profile-image"
+                  onError={(e) => {
+                    e.target.src = "/default-profileimage.jpg";
+                  }}
                 />
                 <div className="profile-overlay">
                   <div className="social-icons">
-                    <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                    <a
+                      href="https://github.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fab fa-github"></i>
                     </a>
-                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                    <a
+                      href="https://linkedin.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fab fa-linkedin"></i>
                     </a>
-                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                    <a
+                      href="https://twitter.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fab fa-twitter"></i>
                     </a>
                   </div>
@@ -95,7 +127,7 @@ const About = ({ about }) => {
               </div>
             ))}
           </div>
-          
+
           {/* Personal Information */}
           <div className="personal-info">
             <div>

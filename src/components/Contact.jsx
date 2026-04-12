@@ -44,27 +44,27 @@ const Contact = () => {
                 <FaMapMarkerAlt />
                 <div>
                   <h4>Location</h4>
-                  <p>San Francisco, CA</p>
+                  <p>Pudukkottai, TN</p>
                 </div>
               </div>
               <div>
                 <FaPhone />
                 <div>
                   <h4>Phone</h4>
-                  <p>+1 (555) 123-4567</p>
+                  <p>+91 9629419151</p>
                 </div>
               </div>
               <div>
                 <FaEnvelope />
                 <div>
                   <h4>Email</h4>
-                  <p>john@example.com</p>
+                  <p>ishackmohamed028@gmail.com</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <form className="contact-form" onSubmit={handleSubmit}>
+          {/* <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <input
                 type="text"
@@ -99,7 +99,7 @@ const Contact = () => {
               {status === 'sending' ? 'Sending...' : 'Send Message'}
             </button>
             {status === 'success' && <p className="success-message">Message sent successfully!</p>}
-          </form>
+          </form> */}
         </div>
       </div>
     </section>
