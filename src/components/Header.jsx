@@ -6,7 +6,7 @@ import "./Header.css";
 const Header = ({ darkMode, setDarkMode, isAdminPage = false, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = useCallback(() => setIsOpen(!isOpen), []);
+  const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
   const closeMenu = useCallback(() => setIsOpen(false), []);
 
   const handleNavigation = useCallback(
