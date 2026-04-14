@@ -64,7 +64,7 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* <form className="contact-form" onSubmit={handleSubmit}>
+          <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <input
                 type="text"
@@ -99,7 +99,7 @@ const Contact = () => {
               {status === 'sending' ? 'Sending...' : 'Send Message'}
             </button>
             {status === 'success' && <p className="success-message">Message sent successfully!</p>}
-          </form> */}
+          </form>
         </div>
       </div>
     </section>

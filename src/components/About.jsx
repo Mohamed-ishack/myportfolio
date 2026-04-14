@@ -178,7 +178,6 @@ const About = () => {
               <i className="fas fa-quote-left"></i>
               <p>{data.quote}</p>
               <span>- {data.quoteAuthor}</span>
-            </div>
           </div>
         </div>
       </div>

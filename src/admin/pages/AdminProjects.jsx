@@ -240,8 +240,7 @@ const AdminProjects = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
+      </div>
     </div>
   );
 };

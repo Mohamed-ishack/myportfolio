@@ -160,47 +160,48 @@ const AdminSkills = () => {
       <h2 style={{ ...s.heading, color: '#1a1a2e' }}>All Skills</h2>
       <div className="admin-card">
         {CATEGORIES.map((cat) => {
-            const catSkills = skills.filter((sk) => sk.category === cat);
-            if (catSkills.length === 0) return null;
-            return (
-              <div key={cat} style={{ marginBottom: '24px' }}>
-                <h4 style={{ ...s.catLabel, color: '#1a1a2e' }}>{cat}</h4>
-                <div className="table-container">
-                  <table className="admin-table" style={{ color: '#1a1a2e' }}>
-                    <thead>
-                      <tr style={{ ...s.theadRow, color: '#1a1a2e' }}>
-                        <th style={{ ...s.th, color: '#1a1a2e' }}>Name</th>
-                        <th style={{ ...s.th, color: '#1a1a2e' }}>Icon Key</th>
-                        <th style={{ ...s.th, color: '#1a1a2e' }}>Level</th>
-                        <th style={{ ...s.th, color: '#1a1a2e' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {catSkills.map((skill) => (
-                        <tr key={skill.id} style={s.tr}>
-                          <td style={s.td}>{skill.name}</td>
-                          <td style={s.td}>{skill.icon}</td>
-                          <td style={s.td}>
-                            {/* Level bar */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <div style={s.barBg}>
-                                <div style={{ ...s.barFill, width: `${skill.level}%` }}></div>
-                              </div>
-                              <span style={{ fontSize: '13px', minWidth: '32px' }}>{skill.level}%</span>
+          const catSkills = skills.filter((sk) => sk.category === cat);
+          if (catSkills.length === 0) return null;
+          return (
+            <div key={cat} style={{ marginBottom: '24px' }}>
+              <h4 style={{ ...s.catLabel, color: '#1a1a2e' }}>{cat}</h4>
+              <div className="table-container">
+                <table className="admin-table" style={{ color: '#1a1a2e' }}>
+                  <thead>
+                    <tr style={{ ...s.theadRow, color: '#1a1a2e' }}>
+                      <th style={{ ...s.th, color: '#1a1a2e' }}>Name</th>
+                      <th style={{ ...s.th, color: '#1a1a2e' }}>Icon Key</th>
+                      <th style={{ ...s.th, color: '#1a1a2e' }}>Level</th>
+                      <th style={{ ...s.th, color: '#1a1a2e' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {catSkills.map((skill) => (
+                      <tr key={skill.id} style={s.tr}>
+                        <td style={s.td}>{skill.name}</td>
+                        <td style={s.td}>{skill.icon}</td>
+                        <td style={s.td}>
+                          {/* Level bar */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={s.barBg}>
+                              <div style={{ ...s.barFill, width: `${skill.level}%` }}></div>
                             </div>
-                          </td>
-                          <td style={s.td}>
-                            <button style={s.editBtn} onClick={() => handleEdit(skill)}>Edit</button>
-                            <button style={s.deleteBtn} onClick={() => handleDelete(skill.id)}>Delete</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                            <span style={{ fontSize: '13px', minWidth: '32px' }}>{skill.level}%</span>
+                          </div>
+                        </td>
+                        <td style={s.td}>
+                          <button style={s.editBtn} onClick={() => handleEdit(skill)}>Edit</button>
+                          <button style={s.deleteBtn} onClick={() => handleDelete(skill.id)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            );
-        </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

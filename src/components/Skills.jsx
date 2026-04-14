@@ -81,14 +81,12 @@ const Skills = () => {
                             style={{ width: `${skill.level}%` }}
                           ></div>
                         </div>
-                        <span className="skill-percentage">{skill.level}%</span>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
-          </div>
         </div>
       </div>
     </section>
