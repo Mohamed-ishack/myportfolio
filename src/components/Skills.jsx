@@ -50,16 +50,22 @@ const Skills = () => {
       });
   }, []);
 
+  if (isLoading) return (
+    <section id="skills" className="skills">
+      <div className="container">
+        <h2 className="section-title">My Skills</h2>
+        <div className="loading" style={{ minHeight: '250px' }}>
+          <Atom color="#32cd32" size="medium" text="Loading Skills..." textColor="" />
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <section id="skills" className="skills">
       <div className="container">
         <h2 className="section-title">My Skills</h2>
-        {isLoading ? (
-          <div className="loading" style={{ minHeight: '250px' }}>
-            <Atom color="#32cd32" size="medium" text="Loading Skills..." textColor="" />
-          </div>
-        ) : (
-          <div className="skills-container">
+        <div className="skills-container">
             {skillCategories.map((category, idx) => (
               <div key={idx} className="skill-category">
                 <h3>{category.title}</h3>
@@ -83,7 +89,7 @@ const Skills = () => {
               </div>
             ))}
           </div>
-        )}
+        </div>
       </div>
     </section>
   );

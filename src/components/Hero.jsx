@@ -44,6 +44,8 @@ const Hero = () => {
       });
   }, []);
 
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading Hero..." textColor="" /></div>;
+
   return (
     <section id="hero" className="hero">
       <div className="animated-bg">
@@ -59,12 +61,7 @@ const Hero = () => {
       </div>
 
       <div className="container">
-        {isLoading ? (
-          <div className="loading" style={{ minHeight: '400px' }}>
-            <Atom color="#32cd32" size="medium" text="Loading Hero..." textColor="" />
-          </div>
-        ) : (
-          <div className={`hero-content ${isVisible ? "visible" : ""}`}>
+        <div className={`hero-content ${isVisible ? "visible" : ""}`}>
             <div className="hero-left">
             <div className="hero-text">
               <div className="greeting">Welcome to my portfolio</div>

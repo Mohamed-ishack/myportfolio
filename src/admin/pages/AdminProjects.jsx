@@ -104,16 +104,19 @@ const AdminProjects = () => {
     setPreview('');
   };
 
+  if (isLoading) return (
+    <div className="admin-page">
+      <h2 style={{ marginBottom: '16px', color: 'black' }}>{editId ? 'Edit Project' : 'Add New Project'}</h2>
+      <div className="loading" style={{ minHeight: '300px' }}>
+        <Atom color="#32cd32" size="medium" text="Loading Projects..." textColor="" />
+      </div>
+    </div>
+  );
+
   return (
     <div className="admin-page">
       <h2 style={{ marginBottom: '16px', color: 'black' }}>{editId ? 'Edit Project' : 'Add New Project'}</h2>
-      {isLoading ? (
-        <div className="loading" style={{ minHeight: '300px' }}>
-          <Atom color="#32cd32" size="medium" text="Loading Projects..." textColor="" />
-        </div>
-      ) : (
-        <>
-          <div className="admin-card">
+      <div className="admin-card">
             <form onSubmit={handleSubmit}>
               <div style={s.imageSection} className="admin-image-section">
                 <div style={s.previewWrapper}>
@@ -238,8 +241,7 @@ const AdminProjects = () => {
               </tbody>
             </table>
           </div>
-        </>
-      )}
+        </div>
     </div>
   );
 };

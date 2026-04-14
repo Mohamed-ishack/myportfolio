@@ -82,15 +82,12 @@ const AdminHero = () => {
     }
   };
 
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading Hero Data..." textColor="" /></div>;
+
   return (
     <div className="admin-page">
       <h2 style={{ marginBottom: '16px', color: 'black' }}>Edit Hero Section</h2>
-      {isLoading ? (
-        <div className="loading" style={{ minHeight: '300px' }}>
-          <Atom color="#32cd32" size="medium" text="Loading Hero Data..." textColor="" />
-        </div>
-      ) : (
-        <div className="admin-card">
+      <div className="admin-card">
         <form onSubmit={handleSubmit}>
 
           {/* ✅ Profile Image Upload Section */}

@@ -79,16 +79,18 @@ const AdminSkills = () => {
 
   const handleCancel = () => { setForm(empty); setEditId(null); };
 
+  if (isLoading) return (
+    <div className="admin-page">
+      <h2 style={{ ...s.heading, color: '#1a1a2e' }}>{editId ? 'Edit Skill' : 'Add Skill'}</h2>
+      <div className="loading" style={{ minHeight: '300px' }}>
+        <Atom color="#32cd32" size="medium" text="Loading Skills..." textColor="" />
+      </div>
+    </div>
+  );
+
   return (
     <div className="admin-page">
       <h2 style={{ ...s.heading, color: '#1a1a2e' }}>{editId ? 'Edit Skill' : 'Add Skill'}</h2>
-      {isLoading ? (
-        <div className="loading" style={{ minHeight: '300px' }}>
-          <Atom color="#32cd32" size="medium" text="Loading Skills..." textColor="" />
-        </div>
-      ) : (
-        <>
-
       {/* Form Card */}
       <div className="admin-card">
         <form onSubmit={handleSubmit}>
@@ -198,10 +200,7 @@ const AdminSkills = () => {
                 </div>
               </div>
             );
-          })}
         </div>
-        </>
-      )}
     </div>
   );
 };

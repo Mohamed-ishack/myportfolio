@@ -75,16 +75,22 @@ const About = () => {
 
   const profileImageUrl = data.profileImage || "/default-profileimage.jpg";
 
+  if (isLoading) return (
+    <section id="about" className="about">
+      <div className="container" style={{ minHeight: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <h2 className="section-title">About Me</h2>
+        <div className="loading">
+          <Atom color="#32cd32" size="medium" text="Loading Bio..." textColor="" />
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <section id="about" className="about">
       <div className="container">
         <h2 className="section-title">About Me</h2>
-        {isLoading ? (
-          <div className="loading" style={{ minHeight: '300px' }}>
-            <Atom color="#32cd32" size="medium" text="Loading Bio..." textColor="" />
-          </div>
-        ) : (
-          <div className="about-content visible" ref={aboutRef}>
+        <div className="about-content visible" ref={aboutRef}>
             {/* Profile Section with Image */}
             <div className="about-profile">
               <div className="profile-image-wrapper">
@@ -174,7 +180,7 @@ const About = () => {
               <span>- {data.quoteAuthor}</span>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );
