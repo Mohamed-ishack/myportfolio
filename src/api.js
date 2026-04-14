@@ -78,3 +78,4 @@ export async function updateSkills(skills, token) {
   });
   return handleResponse(response);
 }
+console.log("checking commit");
