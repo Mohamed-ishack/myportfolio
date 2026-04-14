@@ -15,7 +15,7 @@ const AdminLogin = () => {
     setIsLoading(true);
     setError('');
     try {
-      const res = await axios.post('/api/admin/login', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/login`, {
         username,
         password
       });
@@ -30,7 +30,7 @@ const AdminLogin = () => {
     }
   };
 
-  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Logging in..." textColor="" /></div>;
+  if (isLoading) return <div className="loading" style={{ height: '100vh' }}><Atom color="#32cd32" size="medium" text="Logging in..." textColor="" /></div>;
 
   return (
     <div style={styles.wrapper}>

@@ -24,7 +24,7 @@ const AdminAbout = () => {
   const fileInputRef              = useRef(null);
 
   useEffect(() => {
-    axios.get('/api/about')
+    axios.get(`${import.meta.env.VITE_API_URL}/api/about`)
       .then((res) => {
         if (res.data) {
           setForm(res.data);
@@ -56,7 +56,7 @@ const AdminAbout = () => {
 
     setUploading(true);
     try {
-      const res = await axios.post('/api/upload', formData, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const imageUrl = res.data.url;
@@ -74,9 +74,9 @@ const AdminAbout = () => {
     e.preventDefault();
     try {
       if (form.id) {
-        await axios.put(`/api/about/${form.id}`, form);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/about/${form.id}`, form);
       } else {
-        const res = await axios.post('/api/about', form);
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/about`, form);
         setForm((prev) => ({ ...prev, id: res.data.id }));
       }
       setSaved(true);
@@ -87,13 +87,15 @@ const AdminAbout = () => {
     }
   };
 
-  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
-
   return (
     <div className="admin-page">
       <h2 style={{ ...s.heading, color: 'black' }}>Edit About Section</h2>
-
-      <div className="admin-card">
+      {isLoading ? (
+        <div className="loading" style={{ minHeight: '300px' }}>
+          <Atom color="#32cd32" size="medium" text="Loading About Data..." textColor="" />
+        </div>
+      ) : (
+        <div className="admin-card">
         <form onSubmit={handleSubmit}>
 
           {/* ✅ Profile Image Upload */}

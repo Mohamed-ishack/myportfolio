@@ -16,7 +16,10 @@ const AdminProjects = () => {
   const fetchProjects = () => {
     axios.get(`${import.meta.env.VITE_API_URL}/api/projects`)
       .then((res) => { setProjects(res.data); setIsLoading(false); })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => { fetchProjects(); }, []);
@@ -24,8 +27,6 @@ const AdminProjects = () => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
-  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   // ✅ Upload image to Spring Boot
   const handleImageUpload = async (e) => {
@@ -89,8 +90,12 @@ const AdminProjects = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return;
-    await axios.delete(`${import.meta.env.VITE_API_URL}/api/projects/${id}`);
-    fetchProjects();
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/projects/${id}`);
+      fetchProjects();
+    } catch (err) {
+      console.error('Error deleting project:', err);
+    }
   };
 
   const handleCancel = () => {
@@ -102,133 +107,139 @@ const AdminProjects = () => {
   return (
     <div className="admin-page">
       <h2 style={{ marginBottom: '16px', color: 'black' }}>{editId ? 'Edit Project' : 'Add New Project'}</h2>
-
-      <div className="admin-card">
-        <form onSubmit={handleSubmit}>
-
-          <div style={s.imageSection} className="admin-image-section">
-            <div style={s.previewWrapper}>
-              {preview ? (
-                <img
-                  src={preview}
-                  alt="Project Preview"
-                  style={s.previewImg}
-                />
-              ) : (
-                <div style={s.previewPlaceholder}>No Image</div>
-              )}
-            </div>
-
-            <div style={s.uploadInfo}>
-              <p style={s.uploadLabel}>Project Image</p>
-              <p style={s.uploadHint}>JPG, PNG — max 5MB</p>
-              <button
-                type="button"
-                style={s.uploadBtn}
-                onClick={() => fileInputRef.current.click()}
-                disabled={uploading}
-              >
-                {uploading ? 'Uploading...' : 'Choose Image'}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                style={{ display: 'none' }}
-              />
-              {form.image && (
-                <p style={s.urlText}>
-                  Saved: <span style={{ color: '#667eea' }}>{form.image}</span>
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="admin-grid grid-2" style={{ marginTop: '16px' }}>
-            {[
-              { name: 'title', placeholder: 'Project Title' },
-              { name: 'category', placeholder: 'Category (fullstack/frontend/backend)' },
-              { name: 'tech', placeholder: 'Tech (React,Node.js,MongoDB)' },
-              { name: 'github', placeholder: 'GitHub URL' },
-              { name: 'demo', placeholder: 'Demo URL' },
-            ].map((f) => (
-              <input
-                key={f.name}
-                name={f.name}
-                value={form[f.name]}
-                onChange={handleChange}
-                placeholder={f.placeholder}
-                className="admin-input"
-                required={['title', 'category', 'tech'].includes(f.name)}
-              />
-            ))}
-          </div>
-
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Project Description"
-            className="admin-input"
-            style={{ height: '80px', resize: 'vertical', marginTop: '10px' }}
-            required
-          />
-
-          <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
-            <button style={s.btnPrimary} type="submit">
-              {editId ? 'Update Project' : 'Add Project'}
-            </button>
-            {editId && (
-              <button style={s.btnSecondary} type="button" onClick={handleCancel}>
-                Cancel
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
-
-      <h2 style={{ ...s.heading, color: 'black' }}>All Projects</h2>
-      <div className="table-container">
-        <table className="admin-table" style={{ color: 'black' }}>
-          <thead>
-            <tr style={{ ...s.theadRow, color: 'black' }}>
-              <th style={s.th}>Image</th>
-              <th style={s.th}>Title</th>
-              <th style={s.th}>Category</th>
-              <th style={s.th}>Tech</th>
-              <th style={s.th}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.map((p) => (
-              <tr key={p.id} style={s.tr}>
-                <td style={s.td}>
-                  {p.image ? (
+      {isLoading ? (
+        <div className="loading" style={{ minHeight: '300px' }}>
+          <Atom color="#32cd32" size="medium" text="Loading Projects..." textColor="" />
+        </div>
+      ) : (
+        <>
+          <div className="admin-card">
+            <form onSubmit={handleSubmit}>
+              <div style={s.imageSection} className="admin-image-section">
+                <div style={s.previewWrapper}>
+                  {preview ? (
                     <img
-                      src={p.image}
-                      alt={p.title}
-                      style={s.thumbnail}
-                      onError={(e) => { e.target.onerror = null; }}
+                      src={preview}
+                      alt="Project Preview"
+                      style={s.previewImg}
                     />
                   ) : (
-                    <div style={s.noThumb}>No img</div>
+                    <div style={s.previewPlaceholder}>No Image</div>
                   )}
-                </td>
-                <td style={s.td}>{p.title}</td>
-                <td style={s.td}>{p.category}</td>
-                <td style={s.td}>
-                  {Array.isArray(p.tech) ? p.tech.join(', ') : p.tech}
-                </td>
-                <td style={s.td}>
-                  <button style={s.editBtn} onClick={() => handleEdit(p)}>Edit</button>
-                  <button style={s.deleteBtn} onClick={() => handleDelete(p.id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </div>
+
+                <div style={s.uploadInfo}>
+                  <p style={s.uploadLabel}>Project Image</p>
+                  <p style={s.uploadHint}>JPG, PNG — max 5MB</p>
+                  <button
+                    type="button"
+                    style={s.uploadBtn}
+                    onClick={() => fileInputRef.current.click()}
+                    disabled={uploading}
+                  >
+                    {uploading ? 'Uploading...' : 'Choose Image'}
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                  />
+                  {form.image && (
+                    <p style={s.urlText}>
+                      Saved: <span style={{ color: '#667eea' }}>{form.image}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="admin-grid grid-2" style={{ marginTop: '16px' }}>
+                {[
+                  { name: 'title', placeholder: 'Project Title' },
+                  { name: 'category', placeholder: 'Category (fullstack/frontend/backend)' },
+                  { name: 'tech', placeholder: 'Tech (React,Node.js,MongoDB)' },
+                  { name: 'github', placeholder: 'GitHub URL' },
+                  { name: 'demo', placeholder: 'Demo URL' },
+                ].map((f) => (
+                  <input
+                    key={f.name}
+                    name={f.name}
+                    value={form[f.name]}
+                    onChange={handleChange}
+                    placeholder={f.placeholder}
+                    className="admin-input"
+                    required={['title', 'category', 'tech'].includes(f.name)}
+                  />
+                ))}
+              </div>
+
+              <textarea
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="Project Description"
+                className="admin-input"
+                style={{ height: '80px', resize: 'vertical', marginTop: '10px' }}
+                required
+              />
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+                <button style={s.btnPrimary} type="submit">
+                  {editId ? 'Update Project' : 'Add Project'}
+                </button>
+                {editId && (
+                  <button style={s.btnSecondary} type="button" onClick={handleCancel}>
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          <h2 style={{ ...s.heading, color: 'black' }}>All Projects</h2>
+          <div className="table-container">
+            <table className="admin-table" style={{ color: 'black' }}>
+              <thead>
+                <tr style={{ ...s.theadRow, color: 'black' }}>
+                  <th style={s.th}>Image</th>
+                  <th style={s.th}>Title</th>
+                  <th style={s.th}>Category</th>
+                  <th style={s.th}>Tech</th>
+                  <th style={s.th}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {projects.map((p) => (
+                  <tr key={p.id} style={s.tr}>
+                    <td style={s.td}>
+                      {p.image ? (
+                        <img
+                          src={p.image}
+                          alt={p.title}
+                          style={s.thumbnail}
+                          onError={(e) => { e.target.onerror = null; }}
+                        />
+                      ) : (
+                        <div style={s.noThumb}>No img</div>
+                      )}
+                    </td>
+                    <td style={s.td}>{p.title}</td>
+                    <td style={s.td}>{p.category}</td>
+                    <td style={s.td}>
+                      {Array.isArray(p.tech) ? p.tech.join(', ') : p.tech}
+                    </td>
+                    <td style={s.td}>
+                      <button style={s.editBtn} onClick={() => handleEdit(p)}>Edit</button>
+                      <button style={s.deleteBtn} onClick={() => handleDelete(p.id)}>Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 };

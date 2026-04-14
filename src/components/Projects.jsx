@@ -29,7 +29,7 @@ const Projects = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get("/api/projects");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects`);
         setProjectData(response.data);
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -39,7 +39,6 @@ const Projects = () => {
     };
 
     fetchProjects();
-    console.log("Projects render");
   }, []);
 
   // ✅ Memoize categories
@@ -61,8 +60,6 @@ const Projects = () => {
   const handleFilterChange = useCallback((category) => {
     setFilter(category);
   }, []);
-
-  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   return (
     <section id="projects" className="projects">

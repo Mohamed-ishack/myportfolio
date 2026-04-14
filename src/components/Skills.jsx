@@ -39,7 +39,7 @@ const Skills = () => {
 
   useEffect(() => {
     axios
-      .get("/api/skills")
+      .get(`${import.meta.env.VITE_API_URL}/api/skills`)
       .then((response) => {
         setSkillCategories(response.data);
         setIsLoading(false);
@@ -50,36 +50,40 @@ const Skills = () => {
       });
   }, []);
 
-  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
-
   return (
     <section id="skills" className="skills">
       <div className="container">
         <h2 className="section-title">My Skills</h2>
-        <div className="skills-container">
-          {skillCategories.map((category, idx) => (
-            <div key={idx} className="skill-category">
-              <h3>{category.title}</h3>
-              <div className="skills-grid">
-                {category.skills.map((skill, skillIdx) => (
-                  <div key={skillIdx} className="skill-item">
-                    <div className="skill-icon">{getIcon(skill.icon)}</div>
-                    <div className="skill-info">
-                      <span className="skill-name">{skill.name}</span>
-                      <div className="skill-bar">
-                        <div
-                          className="skill-progress"
-                          style={{ width: `${skill.level}%` }}
-                        ></div>
+        {isLoading ? (
+          <div className="loading" style={{ minHeight: '250px' }}>
+            <Atom color="#32cd32" size="medium" text="Loading Skills..." textColor="" />
+          </div>
+        ) : (
+          <div className="skills-container">
+            {skillCategories.map((category, idx) => (
+              <div key={idx} className="skill-category">
+                <h3>{category.title}</h3>
+                <div className="skills-grid">
+                  {category.skills.map((skill, skillIdx) => (
+                    <div key={skillIdx} className="skill-item">
+                      <div className="skill-icon">{getIcon(skill.icon)}</div>
+                      <div className="skill-info">
+                        <span className="skill-name">{skill.name}</span>
+                        <div className="skill-bar">
+                          <div
+                            className="skill-progress"
+                            style={{ width: `${skill.level}%` }}
+                          ></div>
+                        </div>
+                        <span className="skill-percentage">{skill.level}%</span>
                       </div>
-                      <span className="skill-percentage">{skill.level}%</span>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

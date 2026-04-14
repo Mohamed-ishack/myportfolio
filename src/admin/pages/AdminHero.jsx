@@ -15,7 +15,7 @@ const AdminHero = () => {
   const fileInputRef                = useRef(null);
 
   useEffect(() => {
-    axios.get('/api/hero')
+    axios.get(`${import.meta.env.VITE_API_URL}/api/hero`)
       .then((res) => {
         if (res.data) {
           const raw = res.data;
@@ -29,8 +29,6 @@ const AdminHero = () => {
         setIsLoading(false);
       });
   }, []);
-
-  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -51,7 +49,7 @@ const AdminHero = () => {
 
     setUploading(true);
     try {
-      const res = await axios.post('/api/upload', formData, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const imageUrl = res.data.url;
@@ -71,9 +69,9 @@ const AdminHero = () => {
     e.preventDefault();
     try {
       if (form.id) {
-        await axios.put(`/api/hero/${form.id}`, form);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/hero/${form.id}`, form);
       } else {
-        const res = await axios.post('/api/hero', form);
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/hero`, form);
         setForm((prev) => ({ ...prev, id: res.data.id }));
       }
       setSaved(true);
@@ -87,7 +85,12 @@ const AdminHero = () => {
   return (
     <div className="admin-page">
       <h2 style={{ marginBottom: '16px', color: 'black' }}>Edit Hero Section</h2>
-      <div className="admin-card">
+      {isLoading ? (
+        <div className="loading" style={{ minHeight: '300px' }}>
+          <Atom color="#32cd32" size="medium" text="Loading Hero Data..." textColor="" />
+        </div>
+      ) : (
+        <div className="admin-card">
         <form onSubmit={handleSubmit}>
 
           {/* ✅ Profile Image Upload Section */}

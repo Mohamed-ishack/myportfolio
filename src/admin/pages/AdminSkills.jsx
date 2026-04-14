@@ -15,7 +15,7 @@ const AdminSkills = () => {
   const [saved, setSaved] = useState(false);
 
   const fetchSkills = () => {
-    axios.get('/api/skills')
+    axios.get(`${import.meta.env.VITE_API_URL}/api/skills`)
       .then((res) => {
         // res.data is grouped [{title, skills}]
         // flatten into single array for table view
@@ -37,16 +37,14 @@ const AdminSkills = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = { ...form, level: parseInt(form.level) };
       if (editId) {
-        await axios.put(`/api/skills/${editId}`, payload);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/skills/${editId}`, payload);
       } else {
-        await axios.post('/api/skills', payload);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/skills`, payload);
       }
       setForm(empty);
       setEditId(null);
@@ -72,7 +70,7 @@ const AdminSkills = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this skill?')) return;
     try {
-      await axios.delete(`/api/skills/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/skills/${id}`);
       fetchSkills();
     } catch (err) {
       console.error('Error deleting skill:', err);
@@ -84,6 +82,12 @@ const AdminSkills = () => {
   return (
     <div className="admin-page">
       <h2 style={{ ...s.heading, color: '#1a1a2e' }}>{editId ? 'Edit Skill' : 'Add Skill'}</h2>
+      {isLoading ? (
+        <div className="loading" style={{ minHeight: '300px' }}>
+          <Atom color="#32cd32" size="medium" text="Loading Skills..." textColor="" />
+        </div>
+      ) : (
+        <>
 
       {/* Form Card */}
       <div className="admin-card">
@@ -194,9 +198,10 @@ const AdminSkills = () => {
                 </div>
               </div>
             );
-          })
-        }
-      </div>
+          })}
+        </div>
+        </>
+      )}
     </div>
   );
 };
