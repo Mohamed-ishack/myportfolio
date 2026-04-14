@@ -82,3 +82,13 @@ section {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Loading state centering */
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  width: 100%;
+}

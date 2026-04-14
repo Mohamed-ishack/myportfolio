@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
-import { Link } from 'react-scroll';
-import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa';
-import './Header.css';
+import React, { useState, useCallback } from "react";
+import { Link } from "react-scroll";
+import { FaBars, FaTimes, FaSun, FaMoon } from "react-icons/fa";
+import "./Header.css";
 
 const Header = ({ darkMode, setDarkMode, isAdminPage = false, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
-  const closeMenu = () => setIsOpen(false);
+  const toggleMenu = useCallback(() => setIsOpen(!isOpen), []);
+  const closeMenu = useCallback(() => setIsOpen(false), []);
 
-  const handleNavigation = (path) => {
-    if (onNavigate) {
-      onNavigate(path);
-    }
-    closeMenu();
-  };
+  const handleNavigation = useCallback(
+    (path) => {
+      if (onNavigate) {
+        onNavigate(path);
+      }
+      closeMenu();
+    },
+    [onNavigate, closeMenu],
+  );
+
+  const toggleDarkMode = useCallback(() => {
+    setDarkMode(!darkMode);
+  }, [darkMode, setDarkMode]);
 
   return (
     <header className="header">
@@ -25,31 +32,79 @@ const Header = ({ darkMode, setDarkMode, isAdminPage = false, onNavigate }) => {
           </Link>
         </div>
 
-        <div className={`nav-menu ${isOpen ? 'active' : ''}`}>
+        <div className={`nav-menu ${isOpen ? "active" : ""}`}>
           <ul>
             {isAdminPage ? (
               <li>
-                <a href="/" onClick={(event) => { event.preventDefault(); handleNavigation('/'); }}>
+                <a
+                  href="/"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleNavigation("/");
+                  }}
+                >
                   Home
                 </a>
               </li>
             ) : (
               <>
-                <li><Link to="hero" smooth={true} duration={500} onClick={closeMenu}>Home</Link></li>
-                <li><Link to="about" smooth={true} duration={500} onClick={closeMenu}>About</Link></li>
-                <li><Link to="skills" smooth={true} duration={500} onClick={closeMenu}>Skills</Link></li>
-                <li><Link to="projects" smooth={true} duration={500} onClick={closeMenu}>Projects</Link></li>
-                <li><Link to="contact" smooth={true} duration={500} onClick={closeMenu}>Contact</Link></li>
+                <li>
+                  <Link
+                    to="hero"
+                    smooth={true}
+                    duration={500}
+                    onClick={closeMenu}
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="about"
+                    smooth={true}
+                    duration={500}
+                    onClick={closeMenu}
+                  >
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="skills"
+                    smooth={true}
+                    duration={500}
+                    onClick={closeMenu}
+                  >
+                    Skills
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="projects"
+                    smooth={true}
+                    duration={500}
+                    onClick={closeMenu}
+                  >
+                    Projects
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="contact"
+                    smooth={true}
+                    duration={500}
+                    onClick={closeMenu}
+                  >
+                    Contact
+                  </Link>
+                </li>
               </>
             )}
           </ul>
         </div>
 
         <div className="nav-controls">
-          <button 
-            className="theme-toggle"
-            onClick={() => setDarkMode(!darkMode)}
-          >
+          <button className="theme-toggle" onClick={toggleDarkMode}>
             {darkMode ? <FaSun /> : <FaMoon />}
           </button>
           <button className="mobile-toggle" onClick={toggleMenu}>

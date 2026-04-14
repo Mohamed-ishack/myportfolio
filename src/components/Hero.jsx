@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-scroll";
-import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope, FaDownload } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaEnvelope, FaDownload, FaInstagram } from "react-icons/fa";
 import "./Hero.css";
 import axios from "axios";
+import { Atom } from 'react-loading-indicators';
 
 const SOCIAL_LINKS = [
   { name: "GitHub", url: "https://github.com/your-username", icon: FaGithub },
-  { name: "LinkedIn", url: "https://linkedin.com/in/your-username", icon: FaLinkedin },
-  { name: "Twitter", url: "https://twitter.com/your-username", icon: FaTwitter },
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/mohamed-ishack-52a845351", icon: FaLinkedin },
+  { name: "Instagram", url: "https://instagram.com/introvert_ishxq", icon: FaInstagram },
   { name: "Email", url: "mailto:ishackmohamed028@gmail.com", icon: FaEnvelope },
 ];
 
@@ -26,14 +27,14 @@ const Hero = () => {
 
   useEffect(() => {
     setIsVisible(true);
-    axios.get("http://localhost:8080/api/hero")
+    axios.get("/api/hero")
       .then((response) => {
         const raw = response.data;
         const techStack = Array.isArray(raw.techStack)
           ? raw.techStack
           : typeof raw.techStack === "string"
-          ? raw.techStack.split(",").map((t) => t.trim())
-          : [];
+            ? raw.techStack.split(",").map((t) => t.trim())
+            : [];
         setData({ ...raw, techStack });
         setIsLoading(false);
       })
@@ -43,7 +44,7 @@ const Hero = () => {
       });
   }, []);
 
-  if (isLoading) return <div className="loading">Loading...</div>;
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   return (
     <section id="hero" className="hero">
@@ -87,7 +88,7 @@ const Hero = () => {
 
               <div className="social-links">
                 {SOCIAL_LINKS.map((item) => (
-                  
+
                   <a
                     key={item.name}
                     href={item.url}
@@ -110,7 +111,7 @@ const Hero = () => {
                     src={data.profileImage || "/default-profileimage.jpg"}
                     alt="Profile"
                     className="profile-image"
-                    onError={(e) => { e.target.src = "/default-profileimage.jpg"; }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = "/default-profileimage.jpg"; }}
                   />
                   <div className="profile-glow"></div>
                   <div className="profile-border"></div>

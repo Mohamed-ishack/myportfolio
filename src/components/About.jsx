@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import axios from "axios";
+import { Atom } from 'react-loading-indicators';
 import "./About.css";
 
 const About = () => {
@@ -14,34 +15,40 @@ const About = () => {
   });
   const [isLoading, setIsLoading] = React.useState(true);
   useEffect(() => {
-  axios.get("http://localhost:8080/api/about")
-    .then((response) => {
-      const raw = response.data;
-      setAboutData({
-        paragraphs: raw.description ? [raw.description] : [],
-        stats: [
-          { label: "Projects Completed", value: raw.projects || "0" },
-          { label: "Happy Clients",       value: raw.clients  || "0" },
-          { label: "Years Experience",    value: raw.years    || "0" },
-          { label: "Coffee Cups",         value: raw.coffee   || "0" },
-        ],
-        personalInfo: {
-          name:       raw.name       || "",
-          email:      raw.email      || "",
-          location:   raw.location   || "",
-          experience: raw.experience || "",
-        },
-        profileImage: raw.profileImage || "",
-        quote:        raw.quote        || "",
-        quoteAuthor:  raw.quoteAuthor  || "",
+    axios.get("/api/about")
+      .then((response) => {
+        const raw = response.data || {};
+        setAboutData({
+          paragraphs: raw.description ? [raw.description] : ["Click 'Edit About Section' in the Admin Panel to add your bio and experience summary."],
+          stats: [
+            { label: "Projects Completed", value: raw.projects || "0" },
+            { label: "Happy Clients",       value: raw.clients  || "0" },
+            { label: "Years Experience",    value: raw.years    || "1" },
+            { label: "Coffee Cups",         value: raw.coffee   || "0" },
+          ],
+          personalInfo: {
+            name:       raw.name       || "Your Name",
+            email:      raw.email      || "your.email@example.com",
+            location:   raw.location   || "City, Country",
+            experience: raw.experience || "Full Stack Developer",
+          },
+          profileImage: raw.profileImage || "",
+          quote:        raw.quote        || "Persistence is the key to success.",
+          quoteAuthor:  raw.quoteAuthor  || "Someone Inspiring",
+        });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching about data:", error);
+        // Provide placeholders on error as well
+        setAboutData((prev) => ({
+          ...prev,
+          paragraphs: ["Error loading content. Please ensure the backend is running."],
+          personalInfo: { name: "Error Loading", email: "", location: "", experience: "" }
+        }));
+        setIsLoading(false);
       });
-      setIsLoading(false);
-    })
-    .catch((error) => {
-      console.error("Error fetching about data:", error);
-      setIsLoading(false);
-    });
-}, []);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -57,25 +64,34 @@ const About = () => {
 
     if (aboutRef.current) {
       observer.observe(aboutRef.current);
+    } else {
+      // Fallback: If ref is not ready, just log it. 
+      // Components might already be visible due to CSS changes.
+      console.log("About ref not found for observer");
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [isLoading]); // Re-run when loading finishes to ensure ref is captured
+
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
+
+  const profileImageUrl = data.profileImage || "/default-profileimage.jpg";
 
   return (
     <section id="about" className="about">
       <div className="container">
         <h2 className="section-title">About Me</h2>
-        <div className="about-content" ref={aboutRef}>
+        <div className="about-content visible" ref={aboutRef}>
           {/* Profile Section with Image */}
           <div className="about-profile">
             <div className="profile-image-wrapper">
               <div className="profile-image-container">
                 <img
-                  src={data.profileImage || null}
+                  src={profileImageUrl}
                   alt="Profile"
                   className="profile-image"
                   onError={(e) => {
+                    e.target.onerror = null;
                     e.target.src = "/default-profileimage.jpg";
                   }}
                 />

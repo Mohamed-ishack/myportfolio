@@ -1,6 +1,6 @@
-// src/admin/pages/AdminAbout.jsx
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { Atom } from 'react-loading-indicators';
 
 const AdminAbout = () => {
   const [form, setForm] = useState({
@@ -24,10 +24,12 @@ const AdminAbout = () => {
   const fileInputRef              = useRef(null);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/about')
+    axios.get('/api/about')
       .then((res) => {
-        setForm(res.data);
-        setPreview(res.data.profileImage || '');
+        if (res.data) {
+          setForm(res.data);
+          setPreview(res.data.profileImage || '');
+        }
         setIsLoading(false);
       })
       .catch((err) => {
@@ -54,7 +56,7 @@ const AdminAbout = () => {
 
     setUploading(true);
     try {
-      const res = await axios.post('http://localhost:8080/api/upload', formData, {
+      const res = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const imageUrl = res.data.url;
@@ -71,26 +73,32 @@ const AdminAbout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8080/api/about/${form.id}`, form);
+      if (form.id) {
+        await axios.put(`/api/about/${form.id}`, form);
+      } else {
+        const res = await axios.post('/api/about', form);
+        setForm((prev) => ({ ...prev, id: res.data.id }));
+      }
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
-      console.error('Error updating about data:', err);
+      console.error('Error saving about data:', err);
+      alert('Failed to save changes.');
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   return (
-    <div>
+    <div className="admin-page">
       <h2 style={{ ...s.heading, color: 'black' }}>Edit About Section</h2>
 
-      <div style={s.card}>
+      <div className="admin-card">
         <form onSubmit={handleSubmit}>
 
           {/* ✅ Profile Image Upload */}
           <h4 style={s.subheading}>Profile Picture</h4>
-          <div style={s.imageSection}>
+          <div style={s.imageSection} className="admin-image-section">
             <div style={s.previewWrapper}>
               {preview ? (
                 <img
@@ -129,9 +137,9 @@ const AdminAbout = () => {
             </div>
           </div>
 
-          {/* Personal Info */}
+          {/* Personal Info - Responsive Grid */}
           <h4 style={s.subheading}>Personal Info</h4>
-          <div style={s.grid2}>
+          <div className="admin-grid grid-2">
             {[
               { name: 'name',       placeholder: 'Your Name'                  },
               { name: 'email',      placeholder: 'Your Email'                 },
@@ -144,7 +152,7 @@ const AdminAbout = () => {
                 value={form[f.name] || ''}
                 onChange={handleChange}
                 placeholder={f.placeholder}
-                style={s.input}
+                className="admin-input"
               />
             ))}
           </div>
@@ -156,12 +164,13 @@ const AdminAbout = () => {
             value={form.description || ''}
             onChange={handleChange}
             placeholder="About description paragraph"
-            style={{ ...s.input, width: '100%', height: '100px', resize: 'vertical', boxSizing: 'border-box' }}
+            className="admin-input"
+            style={{ height: '100px', resize: 'vertical' }}
           />
 
-          {/* Stats */}
+          {/* Stats - Responsive Grid */}
           <h4 style={s.subheading}>Stats</h4>
-          <div style={s.grid4}>
+          <div className="admin-grid grid-4">
             {[
               { name: 'projects', placeholder: 'Projects (e.g. 3+)' },
               { name: 'clients',  placeholder: 'Clients (e.g. 0)'   },
@@ -174,27 +183,27 @@ const AdminAbout = () => {
                 value={form[f.name] || ''}
                 onChange={handleChange}
                 placeholder={f.placeholder}
-                style={s.input}
+                className="admin-input"
               />
             ))}
           </div>
 
-          {/* Quote */}
+          {/* Quote - Responsive Grid */}
           <h4 style={s.subheading}>Quote</h4>
-          <div style={s.grid2}>
+          <div className="admin-grid grid-2">
             <input
               name="quote"
               value={form.quote || ''}
               onChange={handleChange}
               placeholder="Inspirational quote"
-              style={s.input}
+              className="admin-input"
             />
             <input
               name="quoteAuthor"
               value={form.quoteAuthor || ''}
               onChange={handleChange}
               placeholder="Quote author"
-              style={s.input}
+              className="admin-input"
             />
           </div>
 

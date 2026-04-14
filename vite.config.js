@@ -7,12 +7,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://portfoliobackend-1-xmt5.onrender.com',
         changeOrigin: true,
         secure: false,
       },
       '/uploads': {
-        target: 'http://localhost:8080',
+        target: 'https://portfoliobackend-1-xmt5.onrender.com',
         changeOrigin: true,
         secure: false,
       }

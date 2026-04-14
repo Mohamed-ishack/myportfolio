@@ -1,6 +1,6 @@
-// src/admin/pages/AdminProjects.jsx
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { Atom } from 'react-loading-indicators';
 
 const empty = { title:'', category:'', description:'', tech:'', image:'', github:'', demo:'' };
 
@@ -14,7 +14,7 @@ const AdminProjects = () => {
   const fileInputRef              = useRef(null);
 
   const fetchProjects = () => {
-    axios.get('http://localhost:8080/api/projects')
+    axios.get('/api/projects')
       .then((res) => { setProjects(res.data); setIsLoading(false); })
       .catch((err) => console.error(err));
   };
@@ -24,6 +24,8 @@ const AdminProjects = () => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   // ✅ Upload image to Spring Boot
   const handleImageUpload = async (e) => {
@@ -39,7 +41,7 @@ const AdminProjects = () => {
 
     setUploading(true);
     try {
-      const res = await axios.post('http://localhost:8080/api/upload', formData, {
+      const res = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const imageUrl = res.data.url;
@@ -57,9 +59,9 @@ const AdminProjects = () => {
     e.preventDefault();
     try {
       if (editId) {
-        await axios.put(`http://localhost:8080/api/projects/${editId}`, form);
+        await axios.put(`/api/projects/${editId}`, form);
       } else {
-        await axios.post('http://localhost:8080/api/projects', form);
+        await axios.post('/api/projects', form);
       }
       setForm(empty);
       setEditId(null);
@@ -87,7 +89,7 @@ const AdminProjects = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this project?')) return;
-    await axios.delete(`http://localhost:8080/api/projects/${id}`);
+    await axios.delete(`/api/projects/${id}`);
     fetchProjects();
   };
 
@@ -98,17 +100,13 @@ const AdminProjects = () => {
   };
 
   return (
-    <div>
-      <h2 style={{ ...s.heading, color: 'black' }}>
-        {editId ? 'Edit Project' : 'Add Project'}
-      </h2>
+    <div className="admin-page">
+      <h2 style={{ marginBottom: '16px', color: 'black' }}>{editId ? 'Edit Project' : 'Add New Project'}</h2>
 
-      {/* Form */}
-      <div style={{ ...s.card, color: 'black' }}>
+      <div className="admin-card">
         <form onSubmit={handleSubmit}>
 
-          {/* ✅ Project Image Upload */}
-          <div style={s.imageSection}>
+          <div style={s.imageSection} className="admin-image-section">
             <div style={s.previewWrapper}>
               {preview ? (
                 <img
@@ -147,8 +145,7 @@ const AdminProjects = () => {
             </div>
           </div>
 
-          {/* Other fields — removed image URL input since upload handles it */}
-          <div style={{ ...s.grid, marginTop: '16px' }}>
+          <div className="admin-grid grid-2" style={{ marginTop: '16px' }}>
             {[
               { name:'title',    placeholder:'Project Title'                        },
               { name:'category', placeholder:'Category (fullstack/frontend/backend)'},
@@ -162,7 +159,7 @@ const AdminProjects = () => {
                 value={form[f.name]}
                 onChange={handleChange}
                 placeholder={f.placeholder}
-                style={s.input}
+                className="admin-input"
                 required={['title','category','tech'].includes(f.name)}
               />
             ))}
@@ -173,7 +170,8 @@ const AdminProjects = () => {
             value={form.description}
             onChange={handleChange}
             placeholder="Project Description"
-            style={{ ...s.input, width:'100%', height:'80px', resize:'vertical', marginTop:'10px' }}
+            className="admin-input"
+            style={{ height:'80px', resize:'vertical', marginTop:'10px' }}
             required
           />
 
@@ -190,13 +188,9 @@ const AdminProjects = () => {
         </form>
       </div>
 
-      {/* Table */}
       <h2 style={{ ...s.heading, color: 'black' }}>All Projects</h2>
-      <div style={s.card}>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <table style={{ ...s.table, color: 'black' }}>
+      <div className="table-container">
+        <table className="admin-table" style={{ color: 'black' }}>
             <thead>
               <tr style={{ ...s.theadRow, color: 'black' }}>
                 <th style={s.th}>Image</th>
@@ -209,14 +203,13 @@ const AdminProjects = () => {
             <tbody>
               {projects.map((p) => (
                 <tr key={p.id} style={s.tr}>
-                  {/* ✅ Show thumbnail in table */}
                   <td style={s.td}>
                     {p.image ? (
                       <img
                         src={p.image}
                         alt={p.title}
                         style={s.thumbnail}
-                        onError={(e) => { e.target.src = '/default-project.jpg'; }}
+                        onError={(e) => { e.target.onerror = null; e.target.src = '/default-profileimage.jpg'; }}
                       />
                     ) : (
                       <div style={s.noThumb}>No img</div>
@@ -235,7 +228,6 @@ const AdminProjects = () => {
               ))}
             </tbody>
           </table>
-        )}
       </div>
     </div>
   );
@@ -243,7 +235,6 @@ const AdminProjects = () => {
 
 const s = {
   heading:            { marginBottom:'16px', fontSize:'20px' },
-  card:               { background:'white', borderRadius:'10px', padding:'24px', marginBottom:'32px', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' },
   grid:               { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' },
   input:              { padding:'10px', borderRadius:'6px', border:'1px solid #ddd', fontSize:'14px', width:'100%', boxSizing:'border-box', color:'#1a1a2e', background:'#fafafa' },
   btnPrimary:         { padding:'10px 24px', background:'#667eea', color:'white', border:'none', borderRadius:'6px', cursor:'pointer' },

@@ -10,23 +10,23 @@ import Footer from "./components/Footer";
 import AdminApp from "./admin/AdminApp";
 import "./App.css";
 
-// ✅ Separate component for your portfolio page
-// const Portfolio = ({ darkMode, setDarkMode }) => (
+// ✅ Separate component for your portfolio page - moved outside App and memoized
+const Portfolio = React.memo(({ darkMode, setDarkMode }) => (
+  <div className="app">
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Hero />
+    <About />
+    <Skills />
+    <Projects />
+    <Contact />
+    <Footer />
+  </div>
+));
+// const Portfolio = () => (
 //   <div className="app">
-//     <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-//     <Hero />
-//     <About />
-//     <Skills />
 //     <Projects />
-//     <Contact />
-//     <Footer />
 //   </div>
 // );
-const Portfolio = () => (
-  <div className="app">
-    <Projects />
-  </div>
-);
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);

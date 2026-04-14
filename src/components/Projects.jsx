@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
+import { Atom } from 'react-loading-indicators';
 import "./Projects.css";
 
 const SkeletonCard = () => (
@@ -28,7 +29,7 @@ const Projects = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/projects");
+        const response = await axios.get("/api/projects");
         setProjectData(response.data);
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -56,6 +57,13 @@ const Projects = () => {
     [filter, projectData],
   );
 
+  // ✅ Memoize filter handler to prevent unnecessary re-renders
+  const handleFilterChange = useCallback((category) => {
+    setFilter(category);
+  }, []);
+
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
+
   return (
     <section id="projects" className="projects">
       <div className="container">
@@ -71,7 +79,7 @@ const Projects = () => {
                 <button
                   key={cat}
                   className={`filter-btn ${filter === cat ? "active" : ""}`}
-                  onClick={() => setFilter(cat)}
+                  onClick={() => handleFilterChange(cat)}
                 >
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </button>
@@ -91,7 +99,8 @@ const Projects = () => {
                       src={project.image || "/default-project.jpg"}
                       alt={project.title}
                       onError={(e) => {
-                        e.target.src = "/default-project.jpg";
+                        e.target.onerror = null;
+                        e.target.src = "/default-profileimage.jpg";
                       }}
                     />
                     <div className="project-overlay">

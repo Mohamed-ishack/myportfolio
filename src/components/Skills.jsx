@@ -11,6 +11,7 @@ import {
   FaCode,
 } from "react-icons/fa";
 import { SiTypescript, SiMongodb, SiExpress } from "react-icons/si";
+import { Atom } from 'react-loading-indicators';
 import "./Skills.css";
 
 const iconMap = {
@@ -38,7 +39,7 @@ const Skills = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/skills")
+      .get("/api/skills")
       .then((response) => {
         setSkillCategories(response.data);
         setIsLoading(false);
@@ -49,7 +50,7 @@ const Skills = () => {
       });
   }, []);
 
-  if (isLoading) return <div className="loading">Loading...</div>;
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   return (
     <section id="skills" className="skills">

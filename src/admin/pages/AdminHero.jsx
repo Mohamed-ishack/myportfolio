@@ -1,6 +1,6 @@
-// src/admin/pages/AdminHero.jsx
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { Atom } from 'react-loading-indicators';
 
 const AdminHero = () => {
   const [form, setForm] = useState({
@@ -11,16 +11,26 @@ const AdminHero = () => {
   const [saved, setSaved]           = useState(false);
   const [uploading, setUploading]   = useState(false);
   const [preview, setPreview]       = useState('');
+  const [isLoading, setIsLoading]   = useState(true);
   const fileInputRef                = useRef(null);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/hero')
+    axios.get('/api/hero')
       .then((res) => {
-        const raw = res.data;
-        setForm({ ...raw, techStack: raw.techStack || '' });
-        setPreview(raw.profileImage || '');
+        if (res.data) {
+          const raw = res.data;
+          setForm((prev) => ({ ...prev, ...raw, techStack: raw.techStack || '' }));
+          setPreview(raw.profileImage || '');
+        }
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching hero data:', err);
+        setIsLoading(false);
       });
   }, []);
+
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,7 +51,7 @@ const AdminHero = () => {
 
     setUploading(true);
     try {
-      const res = await axios.post('http://localhost:8080/api/upload', formData, {
+      const res = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const imageUrl = res.data.url;
@@ -59,19 +69,29 @@ const AdminHero = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8080/api/hero/${form.id}`, form);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      if (form.id) {
+        await axios.put(`/api/hero/${form.id}`, form);
+      } else {
+        const res = await axios.post('/api/hero', form);
+        setForm((prev) => ({ ...prev, id: res.data.id }));
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('Error saving hero data:', err);
+      alert('Failed to save changes.');
+    }
   };
 
   return (
-    <div>
+    <div className="admin-page">
       <h2 style={{ marginBottom: '16px', color: 'black' }}>Edit Hero Section</h2>
-      <div style={s.card}>
+      <div className="admin-card">
         <form onSubmit={handleSubmit}>
 
           {/* ✅ Profile Image Upload Section */}
-          <div style={s.imageSection}>
+          <div style={s.imageSection} className="admin-image-section">
             <div style={s.previewWrapper}>
               {preview ? (
                 <img
@@ -110,8 +130,8 @@ const AdminHero = () => {
             </div>
           </div>
 
-          {/* Other fields */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
+          {/* Other fields - Responsive Grid */}
+          <div className="admin-grid grid-2" style={{ marginTop: '16px' }}>
             {[
               { name: 'name',            placeholder: 'Your Name'              },
               { name: 'role',            placeholder: 'Your Role'              },
@@ -125,7 +145,7 @@ const AdminHero = () => {
                 value={form[f.name]}
                 onChange={handleChange}
                 placeholder={f.placeholder}
-                style={s.input}
+                className="admin-input"
               />
             ))}
           </div>
@@ -135,7 +155,8 @@ const AdminHero = () => {
             value={form.description}
             onChange={handleChange}
             placeholder="Description"
-            style={{ ...s.input, width: '100%', height: '80px', marginTop: '12px', resize: 'vertical', boxSizing: 'border-box' }}
+            className="admin-input"
+            style={{ height: '80px', marginTop: '12px', resize: 'vertical' }}
           />
 
           <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>

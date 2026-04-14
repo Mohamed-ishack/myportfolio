@@ -1,44 +1,44 @@
-import React, { useState } from 'react';
-import { FaMapMarkerAlt, FaPhone, FaEnvelope } from 'react-icons/fa';
-import './Contact.css';
+import React, { useState, useCallback } from "react";
+import { FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
+import "./Contact.css";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
+    name: "",
+    email: "",
+    message: "",
   });
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = useCallback((e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    setStatus('sending');
-    
+    setStatus("sending");
+
     // Simulate form submission
     setTimeout(() => {
-      setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setStatus(''), 3000);
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+      setTimeout(() => setStatus(""), 3000);
     }, 1500);
-  };
+  }, []);
 
   return (
     <section id="contact" className="contact">
       <div className="container">
         <h2 className="section-title">Get In Touch</h2>
-        
+
         <div className="contact-container">
           <div className="contact-info">
             <h3>Let's talk about your project</h3>
             <p>
-              I'm currently available for freelance work. If you have a project 
+              I'm currently available for freelance work. If you have a project
               that you want to get started, feel free to reach out.
             </p>
-            
+
             <div className="contact-details">
               <div>
                 <FaMapMarkerAlt />

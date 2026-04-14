@@ -1,6 +1,6 @@
-// src/admin/pages/AdminSkills.jsx
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Atom } from 'react-loading-indicators';
 import './AdminSkills.css'
 
 const empty = { name: '', icon: '', level: '', category: '' };
@@ -8,14 +8,14 @@ const empty = { name: '', icon: '', level: '', category: '' };
 const CATEGORIES = ['Frontend', 'Backend', 'Database'];
 
 const AdminSkills = () => {
-  const [skills, setSkills]     = useState([]);
-  const [form, setForm]         = useState(empty);
-  const [editId, setEditId]     = useState(null);
+  const [skills, setSkills] = useState([]);
+  const [form, setForm] = useState(empty);
+  const [editId, setEditId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [saved, setSaved]       = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const fetchSkills = () => {
-    axios.get('http://localhost:8080/api/skills')
+    axios.get('/api/skills')
       .then((res) => {
         // res.data is grouped [{title, skills}]
         // flatten into single array for table view
@@ -37,14 +37,16 @@ const AdminSkills = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Loading" textColor="" /></div>;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = { ...form, level: parseInt(form.level) };
       if (editId) {
-        await axios.put(`http://localhost:8080/api/skills/${editId}`, payload);
+        await axios.put(`/api/skills/${editId}`, payload);
       } else {
-        await axios.post('http://localhost:8080/api/skills', payload);
+        await axios.post('/api/skills', payload);
       }
       setForm(empty);
       setEditId(null);
@@ -59,9 +61,9 @@ const AdminSkills = () => {
   const handleEdit = (skill) => {
     setEditId(skill.id);
     setForm({
-      name:     skill.name,
-      icon:     skill.icon,
-      level:    skill.level,
+      name: skill.name,
+      icon: skill.icon,
+      level: skill.level,
       category: skill.category,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -70,7 +72,7 @@ const AdminSkills = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this skill?')) return;
     try {
-      await axios.delete(`http://localhost:8080/api/skills/${id}`);
+      await axios.delete(`/api/skills/${id}`);
       fetchSkills();
     } catch (err) {
       console.error('Error deleting skill:', err);
@@ -80,20 +82,20 @@ const AdminSkills = () => {
   const handleCancel = () => { setForm(empty); setEditId(null); };
 
   return (
-    <div>
-      <h2 style={{...s.heading, color: '#1a1a2e'}}>{editId ? 'Edit Skill' : 'Add Skill'}</h2>
+    <div className="admin-page">
+      <h2 style={{ ...s.heading, color: '#1a1a2e' }}>{editId ? 'Edit Skill' : 'Add Skill'}</h2>
 
-      {/* Form */}
-      <div style={s.card}>
+      {/* Form Card */}
+      <div className="admin-card">
         <form onSubmit={handleSubmit}>
-          <div style={s.grid}>
+          <div className="admin-grid grid-4">
 
             <input
               name="name"
               value={form.name}
               onChange={handleChange}
               placeholder="Skill Name (e.g. React)"
-              style={s.input}
+              className="admin-input"
               required
             />
 
@@ -102,7 +104,7 @@ const AdminSkills = () => {
               value={form.icon}
               onChange={handleChange}
               placeholder="Icon Key (e.g. React, Node.js)"
-              style={s.input}
+              className="admin-input"
               required
             />
 
@@ -114,7 +116,7 @@ const AdminSkills = () => {
               value={form.level}
               onChange={handleChange}
               placeholder="Level (1-100)"
-              style={s.input}
+              className="admin-input"
               required
             />
 
@@ -123,7 +125,7 @@ const AdminSkills = () => {
               name="category"
               value={form.category}
               onChange={handleChange}
-              style={s.input}
+              className="admin-input"
               required
             >
               <option value="">Select Category</option>
@@ -134,7 +136,7 @@ const AdminSkills = () => {
 
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginTop: '12px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button type="submit" style={s.btnPrimary}>
               {editId ? 'Update Skill' : 'Add Skill'}
             </button>
@@ -148,75 +150,74 @@ const AdminSkills = () => {
         </form>
       </div>
 
-      {/* Skills Table grouped by category */}
+      {/* Skills Tables grouped by category */}
       <h2 style={{ ...s.heading, color: '#1a1a2e' }}>All Skills</h2>
-      <div style={s.card}>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          CATEGORIES.map((cat) => {
+      <div className="admin-card">
+        {CATEGORIES.map((cat) => {
             const catSkills = skills.filter((sk) => sk.category === cat);
             if (catSkills.length === 0) return null;
             return (
               <div key={cat} style={{ marginBottom: '24px' }}>
-                <h4 style={{...s.catLabel, color: '#1a1a2e' }}>{cat}</h4>
-                <table style={{...s.table, color: '#1a1a2e' }}>
-                  <thead>
-                    <tr style={{...s.theadRow, color: '#1a1a2e' }}>
-                      <th style={{...s.th, color: '#1a1a2e' }}>Name</th>
-                      <th style={{...s.th, color: '#1a1a2e' }}>Icon Key</th>
-                      <th style={{...s.th, color: '#1a1a2e' }}>Level</th>
-                      <th style={{...s.th, color: '#1a1a2e' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {catSkills.map((skill) => (
-                      <tr key={skill.id} style={s.tr}>
-                        <td style={s.td}>{skill.name}</td>
-                        <td style={s.td}>{skill.icon}</td>
-                        <td style={s.td}>
-                          {/* Level bar */}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={s.barBg}>
-                              <div style={{ ...s.barFill, width: `${skill.level}%` }}></div>
-                            </div>
-                            <span style={{ fontSize: '13px', minWidth: '32px' }}>{skill.level}%</span>
-                          </div>
-                        </td>
-                        <td style={s.td}>
-                          <button style={s.editBtn} onClick={() => handleEdit(skill)}>Edit</button>
-                          <button style={s.deleteBtn} onClick={() => handleDelete(skill.id)}>Delete</button>
-                        </td>
+                <h4 style={{ ...s.catLabel, color: '#1a1a2e' }}>{cat}</h4>
+                <div className="table-container">
+                  <table className="admin-table" style={{ color: '#1a1a2e' }}>
+                    <thead>
+                      <tr style={{ ...s.theadRow, color: '#1a1a2e' }}>
+                        <th style={{ ...s.th, color: '#1a1a2e' }}>Name</th>
+                        <th style={{ ...s.th, color: '#1a1a2e' }}>Icon Key</th>
+                        <th style={{ ...s.th, color: '#1a1a2e' }}>Level</th>
+                        <th style={{ ...s.th, color: '#1a1a2e' }}>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {catSkills.map((skill) => (
+                        <tr key={skill.id} style={s.tr}>
+                          <td style={s.td}>{skill.name}</td>
+                          <td style={s.td}>{skill.icon}</td>
+                          <td style={s.td}>
+                            {/* Level bar */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div style={s.barBg}>
+                                <div style={{ ...s.barFill, width: `${skill.level}%` }}></div>
+                              </div>
+                              <span style={{ fontSize: '13px', minWidth: '32px' }}>{skill.level}%</span>
+                            </div>
+                          </td>
+                          <td style={s.td}>
+                            <button style={s.editBtn} onClick={() => handleEdit(skill)}>Edit</button>
+                            <button style={s.deleteBtn} onClick={() => handleDelete(skill.id)}>Delete</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             );
           })
-        )}
+        }
       </div>
     </div>
   );
 };
 
 const s = {
-  heading:    { marginBottom: '16px', fontSize: '20px' },
-  catLabel:   { fontSize: '15px', fontWeight: '600', color: '#667eea', marginBottom: '8px' },
-  card:       { background: 'white', borderRadius: '10px', padding: '24px', marginBottom: '32px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' },
-  grid:       { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '10px' },
-  input:      { padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', width: '100%', boxSizing: 'border-box' },
+  heading: { marginBottom: '16px', fontSize: '20px' },
+  catLabel: { fontSize: '15px', fontWeight: '600', color: '#667eea', marginBottom: '8px' },
+  card: { background: 'white', borderRadius: '10px', padding: '24px', marginBottom: '32px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' },
+  grid: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '10px' },
+  input: { padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', width: '100%', boxSizing: 'border-box' },
   btnPrimary: { padding: '10px 24px', background: '#667eea', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' },
-  btnSecondary:{ padding: '10px 24px', background: '#e2e8f0', color: '#333', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' },
-  table:      { width: '100%', borderCollapse: 'collapse' },
-  theadRow:   { background: '#f7f7f7' },
-  th:         { padding: '12px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #eee', fontSize: '14px' },
-  tr:         { borderBottom: '1px solid #eee' },
-  td:         { padding: '12px', fontSize: '14px' },
-  editBtn:    { padding: '6px 14px', background: '#667eea', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginRight: '8px' },
-  deleteBtn:  { padding: '6px 14px', background: '#e53e3e', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' },
-  barBg:      { background: '#eee', borderRadius: '4px', height: '8px', width: '100px' },
-  barFill:    { background: '#667eea', borderRadius: '4px', height: '8px', transition: 'width 0.3s' },
+  btnSecondary: { padding: '10px 24px', background: '#e2e8f0', color: '#333', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' },
+  table: { width: '100%', borderCollapse: 'collapse' },
+  theadRow: { background: '#f7f7f7' },
+  th: { padding: '12px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #eee', fontSize: '14px' },
+  tr: { borderBottom: '1px solid #eee' },
+  td: { padding: '12px', fontSize: '14px' },
+  editBtn: { padding: '6px 14px', background: '#667eea', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginRight: '8px' },
+  deleteBtn: { padding: '6px 14px', background: '#e53e3e', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' },
+  barBg: { background: '#eee', borderRadius: '4px', height: '8px', width: '100px' },
+  barFill: { background: '#667eea', borderRadius: '4px', height: '8px', transition: 'width 0.3s' },
 };
 
 export default AdminSkills;

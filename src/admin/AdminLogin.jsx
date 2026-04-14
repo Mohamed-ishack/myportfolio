@@ -1,18 +1,21 @@
-// src/admin/AdminLogin.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Atom } from 'react-loading-indicators';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError]       = useState('');
+   const [error, setError]       = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
     try {
-      const res = await axios.post('http://localhost:8080/api/admin/login', {
+      const res = await axios.post('/api/admin/login', {
         username,
         password
       });
@@ -22,8 +25,12 @@ const AdminLogin = () => {
       }
     } catch (err) {
       setError('Invalid username or password');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) return <div className="loading"><Atom color="#32cd32" size="medium" text="Logging in..." textColor="" /></div>;
 
   return (
     <div style={styles.wrapper}>

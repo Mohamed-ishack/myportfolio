@@ -8,9 +8,6 @@
 .about-content {
   max-width: 1200px;
   margin: 0 auto;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease-out;
 }
 
 .about-content.visible {

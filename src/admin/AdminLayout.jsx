@@ -1,20 +1,45 @@
 // src/admin/AdminLayout.jsx
+import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { FaBars, FaTimes } from 'react-icons/fa';
+import './AdminLayout.css';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('adminLoggedIn');
     navigate('/admin/login');
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
   return (
-    <div style={styles.container}>
+    <div className="admin-container">
+      {/* Sidebar Backdrop for Mobile */}
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? 'visible' : ''}`} 
+        onClick={closeSidebar}
+      />
+
       {/* Sidebar */}
-      <aside style={styles.sidebar}>
-        <h2 style={styles.logo}>Admin Panel</h2>
-        <nav style={styles.nav}>
+      <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h2 className="admin-logo" style={{ marginBottom: 0 }}>Admin Panel</h2>
+          <button className="menu-toggle-btn" style={{ display: 'none' }} onClick={toggleSidebar}>
+            {/* This button is only shown via CSS media queries if needed, but we used the header one mostly */}
+            <FaTimes />
+          </button>
+        </div>
+
+        <nav className="admin-nav">
           {[
             { to: '/admin/hero',     label: 'Hero'     },
             { to: '/admin/about',    label: 'About'    },
@@ -24,8 +49,9 @@ const AdminLayout = () => {
             <NavLink
               key={item.to}
               to={item.to}
+              className="admin-nav-link"
+              onClick={closeSidebar}
               style={({ isActive }) => ({
-                ...styles.navLink,
                 background: isActive ? '#667eea' : 'transparent',
                 color:      isActive ? 'white'   : '#ccc',
               })}
@@ -34,27 +60,28 @@ const AdminLayout = () => {
             </NavLink>
           ))}
         </nav>
-        <button style={styles.logoutBtn} onClick={handleLogout}>
+        <button className="admin-logout-btn" onClick={handleLogout}>
           Logout
         </button>
       </aside>
 
       {/* Main content */}
-      <main style={styles.main}>
-        <Outlet />
+      <main className="admin-main">
+        {/* Mobile Header (Sticky) */}
+        <header className="admin-mobile-header">
+          <button className="menu-toggle-btn" onClick={toggleSidebar}>
+            {isSidebarOpen ? <FaTimes /> : <FaBars />}
+          </button>
+          <span style={{ fontWeight: 'bold' }}>Admin Panel</span>
+          <div style={{ width: '24px' }}></div> {/* Spacer for symmetry */}
+        </header>
+
+        <div className="admin-content-wrapper">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
-};
-
-const styles = {
-  container:  { display:'flex', minHeight:'100vh' },
-  sidebar:    { width:'220px', background:'#1e1e2f', display:'flex', flexDirection:'column', padding:'24px 16px' },
-  logo:       { color:'white', marginBottom:'32px', fontSize:'18px', textAlign:'center' },
-  nav:        { display:'flex', flexDirection:'column', gap:'8px', flex:1 },
-  navLink:    { padding:'10px 16px', borderRadius:'8px', textDecoration:'none', fontSize:'15px', transition:'all 0.2s' },
-  logoutBtn:  { padding:'10px', background:'#e53e3e', color:'white', border:'none', borderRadius:'8px', cursor:'pointer' },
-  main:       { flex:1, padding:'32px', background:'#f7f7f7', overflowY:'auto' }
 };
 
 export default AdminLayout;
